@@ -1,9 +1,7 @@
-import { useEffect, useRef, useState } from 'react'
-import reactLogo from './assets/react.svg'
+import React, { useEffect, useRef } from 'react'
 import './App.css'
 
-function App() {
-  const [count, setCount] = useState(0)
+const Scratch = () => {
   const hoverRef = useRef(false)
   const canvasPos = useRef({ x: 0, y: 0 })
   const fadeRef = useRef(false)
@@ -97,19 +95,10 @@ function App() {
 
   return (
     <div>
-      <img src={reactLogo} className='logo react' alt='React logo' />
       <canvas id='canvas' width='400' height='300'></canvas>
-      <div
-        onClick={() => {
-          console.log(count)
-          setCount(count + 1)
-          console.log(count)
-        }}
-      >
-        {count}
-      </div>
+      <div onClick={() => {}}>{count}</div>
     </div>
   )
 }
 
-export default App
+export default Scratch

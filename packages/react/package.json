@@ -3,17 +3,21 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
   "scripts": {
-    "dev": "vite --clearScreen false",
-    "build": "tsc && vite build",
-    "preview": "vite preview",
+    "dev": "tsup --watch",
+    "build": "tsup",
     "lint": "eslint \"src/**/*.ts\""
   },
-  "dependencies": {},
   "devDependencies": {
     "@repo/eslint-config": "*",
     "@repo/typescript-config": "*",
+    "@types/react-dom": "^18.3.0",
     "eslint": "^8.57.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tsup": "^8.2.4",
     "typescript": "^5.3.3",
     "vite": "^5.1.4"
   }
