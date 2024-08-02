@@ -1,4 +1,5 @@
 {
+  "name": "scatch-card-root",
   "private": true,
   "scripts": {
     "build": "turbo build",
@@ -11,8 +12,7 @@
     "prettier": "^3.2.5",
     "turbo": "^2.0.11"
   },
-  "name": "with-vite",
-  "packageManager": "bun@1.1.12",
+  "packageManager": "yarn@1.22.22",
   "workspaces": [
     "apps/*",
     "packages/*"

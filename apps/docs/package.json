@@ -9,9 +9,7 @@
     "preview": "vite preview",
     "lint": "eslint \"src/**/*.ts\""
   },
-  "dependencies": {
-    "@repo/ui": "*"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@repo/eslint-config": "*",
     "@repo/typescript-config": "*",
