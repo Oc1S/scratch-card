@@ -6,7 +6,6 @@ import { useLatest } from './hooks';
 import { calcPosition, getDistance } from './utils';
 
 /* TODO: y NAN */
-/* TODO: width height ratio */
 /* TODO: resize */
 export type ScratchCardProps = {
   id?: string;
@@ -15,14 +14,13 @@ export type ScratchCardProps = {
   available?: boolean;
   coverImage?: string;
   threshold?: number;
-  scratchRange?: number;
+  scratchRadius?: number;
   fillStyle?: string;
-  zIndex?: number;
   onFinishStart?: () => void;
   onFinish?: () => void;
 } & React.CanvasHTMLAttributes<HTMLCanvasElement>;
 
-export type CanvasData = {
+type CanvasData = {
   context: CanvasRenderingContext2D | null;
 } & Record<'x' | 'y' | 'width' | 'height', number>;
 
@@ -43,13 +41,13 @@ const ScratchCard = forwardRef<ScratchCardRef, ScratchCardProps>(
       available = true,
       threshold = 0.9,
       coverImage = '',
-      fillStyle = '#ddd',
-      scratchRange = 20,
+      fillStyle = '#fff',
+      scratchRadius = 15,
       onFinishStart,
       onFinish,
       ...rest
     },
-    ref,
+    ref
   ) => {
     const ratioRef = useRef(defaultRatio);
     const canvasDataRef = useRef<CanvasData>({
@@ -70,8 +68,7 @@ const ScratchCard = forwardRef<ScratchCardRef, ScratchCardProps>(
       const ratio = ratioRef.current;
       ctx.globalCompositeOperation = 'destination-out';
       ctx.beginPath();
-      console.log(posX, posY, ratio);
-      ctx.arc(posX * ratio, posY * ratio, scratchRange, 0, Math.PI * 2);
+      ctx.arc(posX * ratio, posY * ratio, scratchRadius, 0, Math.PI * 2);
       ctx.fill();
     };
 
@@ -103,7 +100,7 @@ const ScratchCard = forwardRef<ScratchCardRef, ScratchCardProps>(
       context.beginPath();
       if (getTransparency() > 0.9) {
         context.fillStyle = fillStyle;
-        context.fillRect(0, 0, width, height);
+        context.fillRect(0, 0, width * ratio, height * ratio);
       }
       if (coverImage) {
         const imgElement = document.createElement('img');
@@ -118,7 +115,7 @@ const ScratchCard = forwardRef<ScratchCardRef, ScratchCardProps>(
     };
 
     const fadeOut = (): Promise<void> =>
-      new Promise((resolve) => {
+      new Promise(resolve => {
         if (!window.requestAnimationFrame) return resolve();
         const { context, width, height } = canvasDataRef.current;
         if (!context) return resolve();
@@ -216,7 +213,7 @@ const ScratchCard = forwardRef<ScratchCardRef, ScratchCardProps>(
                 context,
                 cur - canvasDataRef.current.x,
                 calcPosition(cur, prevPos.current.x, prevPos.current.y, pageX, pageY) -
-                  canvasDataRef.current.y,
+                  canvasDataRef.current.y
               );
             }
           }
@@ -245,7 +242,7 @@ const ScratchCard = forwardRef<ScratchCardRef, ScratchCardProps>(
                 context,
                 cur - canvasDataRef.current.x,
                 calcPosition(cur, prevPos.current.x, prevPos.current.y, pageX, pageY) -
-                  canvasDataRef.current.y,
+                  canvasDataRef.current.y
               );
             }
           }
@@ -316,7 +313,7 @@ const ScratchCard = forwardRef<ScratchCardRef, ScratchCardProps>(
     });
 
     return <canvas id={canvasId} width={width} height={height} {...rest} />;
-  },
+  }
 );
 
 export default ScratchCard;

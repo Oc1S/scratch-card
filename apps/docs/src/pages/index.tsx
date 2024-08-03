@@ -3,9 +3,9 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
 import HomepageFeatures from '@site/src/components/HomepageFeatures';
 import Heading from '@theme/Heading';
-import ScratchCard from '@scratch/react';
 
 import styles from './index.module.css';
+import { Demo } from '../components/Demo';
 
 function HomepageHeader() {
   const { siteConfig } = useDocusaurusContext();
@@ -32,9 +32,8 @@ export default function Home(): JSX.Element {
       <main>
         <HomepageFeatures />
       </main>
-
-      <div className="w-screen flex flex-col items-center mt-20">
-        <ScratchCard width={400} height={300} />
+      <div className="mt-20 flex w-screen flex-col items-center bg-white/10 py-10">
+        <Demo />
       </div>
     </Layout>
   );

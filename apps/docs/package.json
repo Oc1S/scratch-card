@@ -18,8 +18,10 @@
     "@docusaurus/core": "3.4.0",
     "@docusaurus/preset-classic": "3.4.0",
     "@mdx-js/react": "^3.0.0",
+    "@nextui-org/react": "^2.4.6",
     "@scratch/react": "*",
     "clsx": "^2.0.0",
+    "framer-motion": "^11.3.21",
     "prism-react-renderer": "^2.3.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0"

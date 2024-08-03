@@ -10,6 +10,7 @@
   "devDependencies": {
     "eslint": "^8.57.0",
     "prettier": "^3.2.5",
+    "prettier-plugin-tailwindcss": "^0.6.5",
     "turbo": "^2.0.11"
   },
   "packageManager": "yarn@1.22.22",
