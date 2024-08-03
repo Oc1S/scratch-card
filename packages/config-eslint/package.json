@@ -10,5 +10,8 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "devDependencies": {
+    "eslint-plugin-react": "^7.35.0"
   }
 }
