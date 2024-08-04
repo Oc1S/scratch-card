@@ -7,6 +7,7 @@ import { calcPosition, getDistance } from './utils';
 
 /* TODO: y NAN */
 /* TODO: resize */
+/* TODO: fade off */
 export type ScratchCardProps = {
   id?: string;
   width: number;
@@ -26,8 +27,8 @@ type CanvasData = {
 
 export interface ScratchCardRef {
   canvasData: CanvasData;
-  fillArea: (coverImage: string) => void;
-  finishScratching: (isTimeout: boolean) => void;
+  fillArea: (coverImage?: string) => void;
+  finishScratching: () => void;
 }
 
 const defaultRatio = 2;

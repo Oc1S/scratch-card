@@ -1,6 +1,6 @@
-import { Checkbox, Input } from '@nextui-org/react';
-import ScratchCard from '@scratch/react';
-import { useState } from 'react';
+import { Button, Checkbox, Input } from '@nextui-org/react';
+import ScratchCard, { ScratchCardRef } from '@scratch/react';
+import { useRef, useState } from 'react';
 
 export const Demo: React.FC = () => {
   const [config, _setConfig] = useState({
@@ -12,9 +12,10 @@ export const Demo: React.FC = () => {
     <T extends keyof typeof config>(key: T) =>
     (value: (typeof config)[T]) =>
       _setConfig(prev => ({ ...prev, [key]: value }));
+  const ref = useRef<ScratchCardRef>();
   return (
     <div className="flex gap-20">
-      <ScratchCard {...config} width={+config.width} height={+config.height} />
+      <ScratchCard {...config} width={+config.width} height={+config.height} ref={ref} />
       {/* config */}
       <div className="flex flex-col gap-4">
         <Input
@@ -32,6 +33,13 @@ export const Demo: React.FC = () => {
         <Checkbox isSelected={config.available} onValueChange={setConfig('available')}>
           Available
         </Checkbox>
+        <Button
+          onClick={() => {
+            ref.current?.finishScratching();
+          }}
+        >
+          Reset
+        </Button>
       </div>
     </div>
   );
