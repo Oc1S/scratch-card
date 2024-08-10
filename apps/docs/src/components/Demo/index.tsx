@@ -27,7 +27,7 @@ export const Demo: React.FC = () => {
         <Input
           label="height"
           type="number"
-          value={String(config.width)}
+          value={String(config.height)}
           onValueChange={setConfig('height')}
         />
         <Checkbox isSelected={config.available} onValueChange={setConfig('available')}>
@@ -35,7 +35,14 @@ export const Demo: React.FC = () => {
         </Checkbox>
         <Button
           onClick={() => {
-            ref.current?.finishScratching();
+            ref.current.finishScratching();
+          }}
+        >
+          Finish
+        </Button>
+        <Button
+          onClick={() => {
+            ref.current.fillArea();
           }}
         >
           Reset

@@ -13,7 +13,8 @@ export type ScratchCardProps = {
   width: number;
   height: number;
   available?: boolean;
-  coverImage?: string;
+  finishTransition?: boolean;
+  cover?: string;
   threshold?: number;
   scratchRadius?: number;
   fillStyle?: string;
@@ -23,11 +24,11 @@ export type ScratchCardProps = {
 
 type CanvasData = {
   context: CanvasRenderingContext2D | null;
-} & Record<'x' | 'y' | 'width' | 'height', number>;
+} & Record<'x' | 'y' | 'width' | 'height' | 'ratioWidth' | 'ratioHeight', number>;
 
 export interface ScratchCardRef {
   canvasData: CanvasData;
-  fillArea: (coverImage?: string) => void;
+  fillArea: (cover?: string) => void;
   finishScratching: () => void;
 }
 
@@ -41,7 +42,7 @@ const ScratchCard = forwardRef<ScratchCardRef, ScratchCardProps>(
       id: canvasId = 'scratch-card',
       available = true,
       threshold = 0.9,
-      coverImage = '',
+      cover = '',
       fillStyle = '#fff',
       scratchRadius = 15,
       onFinishStart,
@@ -56,6 +57,8 @@ const ScratchCard = forwardRef<ScratchCardRef, ScratchCardProps>(
       y: 0,
       width: 0,
       height: 0,
+      ratioWidth: 0,
+      ratioHeight: 0,
       context: null,
     });
     const prevPos = useRef<any>({ x: null, y: null });
@@ -73,18 +76,43 @@ const ScratchCard = forwardRef<ScratchCardRef, ScratchCardProps>(
       ctx.fill();
     };
 
+    const getOrCreateImgElement = () => {
+      const imgElement = document.createElement('img');
+      imgElement.src = cover;
+      imgElement.crossOrigin = 'Anonymous';
+      coverImageRef.current = imgElement;
+      return imgElement;
+    };
+
+    const paint = () => {
+      const { context, ratioHeight, ratioWidth } = canvasDataRef.current;
+      if (!context) return;
+      /* pic */
+      if (cover) {
+        const imgElement = getOrCreateImgElement();
+        typeof imgElement.onload === 'function'
+          ? context.drawImage(imgElement, 0, 0, ratioWidth, ratioHeight)
+          : (imgElement.onload = () => {
+              context.drawImage(imgElement, 0, 0, ratioWidth, ratioHeight);
+            });
+        /* fillStyle */
+      } else {
+        context.fillStyle = fillStyle;
+        context.fillRect(0, 0, ratioWidth, ratioHeight);
+      }
+    };
+
     /**
      * @returns {number} 透明程度，全透明为1，不透明为0，与alpha值相反
      */
     const getTransparency = (): number => {
-      const { context, width, height } = canvasDataRef.current;
+      const { context, ratioWidth, ratioHeight } = canvasDataRef.current;
       if (!context) return 1;
-      const ratio = ratioRef.current;
-      const { data } = context.getImageData(0, 0, width * ratio, height * ratio);
+      const { data } = context.getImageData(0, 0, ratioWidth, ratioHeight);
       const { length } = data;
       const step = 4;
       let transparentPixels = 0;
-      /* 遍历 A值 */
+      /* 遍历 alpha */
       for (let index = 3; index < length; index += step) {
         if (data[index] === 0) {
           transparentPixels++;
@@ -93,52 +121,42 @@ const ScratchCard = forwardRef<ScratchCardRef, ScratchCardProps>(
       return transparentPixels / (length / step);
     };
 
-    const fillArea = (coverImage?: string) => {
-      const { width, height, context } = canvasDataRef.current;
+    const fillArea = () => {
+      const { context } = canvasDataRef.current;
       if (!context) return;
-      const ratio = ratioRef.current;
       context.globalCompositeOperation = 'source-over';
-      context.beginPath();
-      if (getTransparency() > 0.9) {
-        context.fillStyle = fillStyle;
-        context.fillRect(0, 0, width * ratio, height * ratio);
-      }
-      if (coverImage) {
-        const imgElement = document.createElement('img');
-        imgElement.src = coverImage;
-        imgElement.crossOrigin = 'Anonymous';
-        coverImageRef.current = imgElement;
-        imgElement.onload = () => {
-          context.drawImage(imgElement, 0, 0, ratio * width, ratio * height);
-        };
-      }
+      paint();
       finishRef.current = false;
     };
 
+    const rafId = useRef(-1);
     const fadeOut = (): Promise<void> =>
       new Promise(resolve => {
         if (!window.requestAnimationFrame) return resolve();
-        const { context, width, height } = canvasDataRef.current;
+        const { context } = canvasDataRef.current;
         if (!context) return resolve();
-        const ratio = ratioRef.current;
         const duration = 1;
         let alpha = 1;
         const end = 0;
+        /* value / frames */
         const step = (alpha - end) / (duration * 60);
 
         const throttledFadeOut = throttle(() => {
+          if (!finishRef.current) {
+            return cancelAnimationFrame(rafId.current);
+          }
           alpha -= step;
           context.save();
           context.globalCompositeOperation = 'source-in';
           context.globalAlpha = alpha;
-          context.drawImage(coverImageRef.current!, 0, 0, ratio * width, ratio * height);
+          paint();
           context.restore();
         }, 16);
 
         const recursion = () => {
           if (alpha <= end) return resolve();
           throttledFadeOut();
-          requestAnimationFrame(recursion);
+          rafId.current = requestAnimationFrame(recursion);
         };
         recursion();
       });
@@ -147,32 +165,34 @@ const ScratchCard = forwardRef<ScratchCardRef, ScratchCardProps>(
       if (finishRef.current) return;
       finishRef.current = true;
       onFinishStart?.();
-      fadeOut()
-        .then(() => {
-          onFinish?.();
-        })
-        .catch(() => {});
+      fadeOut().finally(onFinish);
     };
     const finishScratchingRef = useLatest(finishScratching);
 
     const recordCanvasInfo = () => {
       const canvasElement = document.querySelector(`#${canvasId}`) as HTMLCanvasElement;
       const ratio = ratioRef.current;
+      const ratioWidth = width * ratio;
+      const ratioHeight = height * ratio;
+
       /* 根据父容器宽高设置width、height */
       // const containerElement = canvasElement.parentElement!;
       // const containerRect = containerElement.getBoundingClientRect();
       // const width = Math.ceil(containerRect.width);
       // const height = Math.ceil(containerRect.height);
+
       canvasElement.style.width = `${width}px`;
       canvasElement.style.height = `${height}px`;
       /* 画布逻辑尺寸 */
-      canvasElement.width = ratio * width;
-      canvasElement.height = ratio * height;
+      canvasElement.width = ratioWidth;
+      canvasElement.height = ratioHeight;
       const canvasRect = canvasElement.getBoundingClientRect();
       canvasDataRef.current.x = canvasRect.x + document.documentElement.scrollLeft;
       canvasDataRef.current.y = canvasRect.y + document.documentElement.scrollTop;
       canvasDataRef.current.width = canvasRect.width;
       canvasDataRef.current.height = canvasRect.height;
+      canvasDataRef.current.ratioWidth = ratioWidth;
+      canvasDataRef.current.ratioHeight = ratioHeight;
     };
 
     const handleScratchCard = () => {
@@ -184,7 +204,7 @@ const ScratchCard = forwardRef<ScratchCardRef, ScratchCardProps>(
       canvasDataRef.current.context = context;
       ratioRef.current = window.devicePixelRatio || defaultRatio;
       recordCanvasInfo();
-      fillArea(coverImage);
+      fillArea();
 
       const throttledCheckTransparency = throttle(() => {
         if (getTransparency() > threshold) {
@@ -202,8 +222,12 @@ const ScratchCard = forwardRef<ScratchCardRef, ScratchCardProps>(
         const touchPoint = evt.changedTouches[0];
         const { pageX, pageY } = touchPoint;
         const distanceThreshold = 5;
+        const currentPointCoordinates = {
+          x: pageX,
+          y: pageY,
+        };
         if (prevPos.current.x) {
-          const dis = getDistance(pageX, pageY, prevPos.current.x, prevPos.current.y);
+          const dis = getDistance(currentPointCoordinates, prevPos.current);
           if (dis >= distanceThreshold) {
             const pointsCount = ~~(dis / distanceThreshold);
             const iterator = (pageX - prevPos.current.x) / (pointsCount + 1);
@@ -213,7 +237,7 @@ const ScratchCard = forwardRef<ScratchCardRef, ScratchCardProps>(
               scratchOff(
                 context,
                 cur - canvasDataRef.current.x,
-                calcPosition(cur, prevPos.current.x, prevPos.current.y, pageX, pageY) -
+                calcPosition(cur, prevPos.current, currentPointCoordinates) -
                   canvasDataRef.current.y
               );
             }
@@ -230,19 +254,25 @@ const ScratchCard = forwardRef<ScratchCardRef, ScratchCardProps>(
       const handleMouseDraw = throttle((evt: MouseEvent) => {
         if (!hoverRef.current) return;
         const { pageX, pageY } = evt;
+        const currentPointCoordinates = {
+          x: pageX,
+          y: pageY,
+        };
         const distanceThreshold = 5;
         if (prevPos.current.x) {
-          const dis = getDistance(pageX, pageY, prevPos.current.x, prevPos.current.y);
+          const dis = getDistance(currentPointCoordinates, prevPos.current);
           if (dis >= distanceThreshold) {
+            /** 需要插入的点位数量 */
             const pointsCount = ~~(dis / distanceThreshold);
-            const iterator = (pageX - prevPos.current.x) / (pointsCount + 1);
+            /** 每步的距离 */
+            const step = (pageX - prevPos.current.x) / (pointsCount + 1);
             let cur = prevPos.current.x;
             for (let idx = 1; idx <= pointsCount; idx++) {
-              cur = cur + iterator;
+              cur = cur + step;
               scratchOff(
                 context,
                 cur - canvasDataRef.current.x,
-                calcPosition(cur, prevPos.current.x, prevPos.current.y, pageX, pageY) -
+                calcPosition(cur, prevPos.current, currentPointCoordinates) -
                   canvasDataRef.current.y
               );
             }
