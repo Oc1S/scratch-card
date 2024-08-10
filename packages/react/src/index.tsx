@@ -5,8 +5,6 @@ import throttle from 'lodash.throttle';
 import { useLatest } from './hooks';
 import { calcPosition, getDistance } from './utils';
 
-/* TODO: y NAN */
-/* TODO: resize */
 /* TODO: fade off */
 export type ScratchCardProps = {
   id?: string;
@@ -39,6 +37,7 @@ const ScratchCard = forwardRef<ScratchCardRef, ScratchCardProps>(
     {
       width,
       height,
+      style,
       id: canvasId = 'scratch-card',
       available = true,
       threshold = 0.9,
@@ -169,7 +168,7 @@ const ScratchCard = forwardRef<ScratchCardRef, ScratchCardProps>(
     };
     const finishScratchingRef = useLatest(finishScratching);
 
-    const recordCanvasInfo = () => {
+    const recordCanvasInfo = (isFirst = false) => {
       const canvasElement = document.querySelector(`#${canvasId}`) as HTMLCanvasElement;
       const ratio = ratioRef.current;
       const ratioWidth = width * ratio;
@@ -184,8 +183,10 @@ const ScratchCard = forwardRef<ScratchCardRef, ScratchCardProps>(
       canvasElement.style.width = `${width}px`;
       canvasElement.style.height = `${height}px`;
       /* 画布逻辑尺寸 */
-      canvasElement.width = ratioWidth;
-      canvasElement.height = ratioHeight;
+      if (isFirst) {
+        canvasElement.width = ratioWidth;
+        canvasElement.height = ratioHeight;
+      }
       const canvasRect = canvasElement.getBoundingClientRect();
       canvasDataRef.current.x = canvasRect.x + document.documentElement.scrollLeft;
       canvasDataRef.current.y = canvasRect.y + document.documentElement.scrollTop;
@@ -203,9 +204,8 @@ const ScratchCard = forwardRef<ScratchCardRef, ScratchCardProps>(
       if (!context) return;
       canvasDataRef.current.context = context;
       ratioRef.current = window.devicePixelRatio || defaultRatio;
-      recordCanvasInfo();
+      recordCanvasInfo(true);
       fillArea();
-
       const throttledCheckTransparency = throttle(() => {
         if (getTransparency() > threshold) {
           finishScratchingRef.current?.();
@@ -217,73 +217,62 @@ const ScratchCard = forwardRef<ScratchCardRef, ScratchCardProps>(
         hoverRef.current = true;
       };
 
-      const handleTouchDraw = throttle((evt: TouchEvent) => {
+      const handleScratch = (pageX: number, pageY: number) => {
+        const distanceThreshold = 5;
+        const currentPointCoordinates = {
+          x: pageX,
+          y: pageY,
+        };
+        if (prevPos.current.x) {
+          const dis = getDistance(currentPointCoordinates, prevPos.current);
+          if (dis >= distanceThreshold) {
+            const pointsCount = ~~(dis / distanceThreshold);
+            const isXSame = prevPos.current.x === pageX;
+            /* parallel to y axis */
+            if (isXSame) {
+              const iterator = (pageY - prevPos.current.y) / (pointsCount + 1);
+              let cur = prevPos.current.y;
+              for (let idx = 0; idx < pointsCount; idx++) {
+                cur = cur + iterator;
+                scratchOff(context, canvasDataRef.current.x, cur);
+              }
+            } else {
+              const iterator = (pageX - prevPos.current.x) / (pointsCount + 1);
+              let cur = prevPos.current.x;
+              const isYSame = prevPos.current.y === pageY;
+              for (let idx = 1; idx <= pointsCount; idx++) {
+                cur = cur + iterator;
+                scratchOff(
+                  context,
+                  cur - canvasDataRef.current.x,
+                  isYSame
+                    ? pageY
+                    : calcPosition(cur, prevPos.current, currentPointCoordinates) -
+                        canvasDataRef.current.y
+                );
+              }
+            }
+          }
+        }
+        prevPos.current = {
+          x: pageX,
+          y: pageY,
+        };
+        scratchOff(context, pageX - canvasDataRef.current.x, pageY - canvasDataRef.current.y);
+        throttledCheckTransparency();
+      };
+
+      const handleTouchScratch = throttle((evt: TouchEvent) => {
         if (!hoverRef.current) return;
         const touchPoint = evt.changedTouches[0];
         const { pageX, pageY } = touchPoint;
-        const distanceThreshold = 5;
-        const currentPointCoordinates = {
-          x: pageX,
-          y: pageY,
-        };
-        if (prevPos.current.x) {
-          const dis = getDistance(currentPointCoordinates, prevPos.current);
-          if (dis >= distanceThreshold) {
-            const pointsCount = ~~(dis / distanceThreshold);
-            const iterator = (pageX - prevPos.current.x) / (pointsCount + 1);
-            let cur = prevPos.current.x;
-            for (let idx = 1; idx <= pointsCount; idx++) {
-              cur = cur + iterator;
-              scratchOff(
-                context,
-                cur - canvasDataRef.current.x,
-                calcPosition(cur, prevPos.current, currentPointCoordinates) -
-                  canvasDataRef.current.y
-              );
-            }
-          }
-        }
-        prevPos.current = {
-          x: pageX,
-          y: pageY,
-        };
-        scratchOff(context, pageX - canvasDataRef.current.x, pageY - canvasDataRef.current.y);
-        throttledCheckTransparency();
+        handleScratch(pageX, pageY);
       }, 16);
 
-      const handleMouseDraw = throttle((evt: MouseEvent) => {
+      const handleMouseScratch = throttle((evt: MouseEvent) => {
         if (!hoverRef.current) return;
         const { pageX, pageY } = evt;
-        const currentPointCoordinates = {
-          x: pageX,
-          y: pageY,
-        };
-        const distanceThreshold = 5;
-        if (prevPos.current.x) {
-          const dis = getDistance(currentPointCoordinates, prevPos.current);
-          if (dis >= distanceThreshold) {
-            /** 需要插入的点位数量 */
-            const pointsCount = ~~(dis / distanceThreshold);
-            /** 每步的距离 */
-            const step = (pageX - prevPos.current.x) / (pointsCount + 1);
-            let cur = prevPos.current.x;
-            for (let idx = 1; idx <= pointsCount; idx++) {
-              cur = cur + step;
-              scratchOff(
-                context,
-                cur - canvasDataRef.current.x,
-                calcPosition(cur, prevPos.current, currentPointCoordinates) -
-                  canvasDataRef.current.y
-              );
-            }
-          }
-        }
-        prevPos.current = {
-          x: pageX,
-          y: pageY,
-        };
-        scratchOff(context, pageX - canvasDataRef.current.x, pageY - canvasDataRef.current.y);
-        throttledCheckTransparency();
+        handleScratch(pageX, pageY);
       }, 16);
 
       const handleTouchEnd = () => {
@@ -299,12 +288,12 @@ const ScratchCard = forwardRef<ScratchCardRef, ScratchCardProps>(
         canvasElement.addEventListener('mousedown', handleTouchStart, {
           passive: false,
         });
-        window.addEventListener('mousemove', handleMouseDraw);
+        window.addEventListener('mousemove', handleMouseScratch);
         window.addEventListener('mouseup', handleTouchEnd);
       };
       const removeEventListenerToMouse = () => {
         canvasElement.removeEventListener('mousedown', handleTouchStart);
-        window.removeEventListener('mousemove', handleMouseDraw);
+        window.removeEventListener('mousemove', handleMouseScratch);
         window.removeEventListener('mouseup', handleTouchEnd);
       };
       /* mouse events --- end */
@@ -314,12 +303,12 @@ const ScratchCard = forwardRef<ScratchCardRef, ScratchCardProps>(
         canvasElement.addEventListener('touchstart', handleTouchStart, {
           passive: false,
         });
-        window.addEventListener('touchmove', handleTouchDraw);
+        window.addEventListener('touchmove', handleTouchScratch);
         window.addEventListener('touchend', handleTouchEnd);
       };
       const removeEventListenerToTouch = () => {
         canvasElement.removeEventListener('touchstart', handleTouchStart);
-        window.removeEventListener('touchmove', handleTouchDraw);
+        window.removeEventListener('touchmove', handleTouchScratch);
         window.removeEventListener('touchend', handleTouchEnd);
       };
       /* touch events --- end */
@@ -333,7 +322,24 @@ const ScratchCard = forwardRef<ScratchCardRef, ScratchCardProps>(
       };
     };
 
-    useEffect(handleScratchCard, []);
+    useEffect(handleScratchCard, [canvasId]);
+    useEffect(() => {
+      const callback = throttle(() => {
+        recordCanvasInfo();
+      }, 16);
+      const observer = new ResizeObserver(() => {
+        recordCanvasInfo();
+      });
+      const canvasElement = document.querySelector(`#${canvasId}`)!;
+      observer.observe(canvasElement);
+      window.addEventListener('resize', callback);
+      window.addEventListener('scroll', callback);
+      return () => {
+        observer.disconnect();
+        window.removeEventListener('resize', callback);
+        window.removeEventListener('scroll', callback);
+      };
+    }, [canvasId]);
 
     useImperativeHandle(ref, () => {
       return {
@@ -343,7 +349,19 @@ const ScratchCard = forwardRef<ScratchCardRef, ScratchCardProps>(
       };
     });
 
-    return <canvas id={canvasId} width={width} height={height} {...rest} />;
+    return (
+      <canvas
+        id={canvasId}
+        width={width}
+        height={height}
+        style={{
+          width,
+          height,
+          ...style,
+        }}
+        {...rest}
+      />
+    );
   }
 );
 
