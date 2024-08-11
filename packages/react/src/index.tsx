@@ -16,6 +16,7 @@ export type ScratchCardProps = {
   fadeDuration?: number;
   scratchRadius?: number;
   fillStyle?: string;
+  onFill?: () => void;
   onFinishStart?: () => void;
   onFinish?: () => void;
 } & React.CanvasHTMLAttributes<HTMLCanvasElement>;
@@ -47,6 +48,7 @@ const ScratchCard = forwardRef<ScratchCardRef, ScratchCardProps>(
       fadeDuration = 1,
       onFinishStart,
       onFinish,
+      onFill,
       ...rest
     },
     ref
@@ -130,6 +132,7 @@ const ScratchCard = forwardRef<ScratchCardRef, ScratchCardProps>(
       context.globalCompositeOperation = 'source-over';
       paint();
       finishRef.current = false;
+      onFill?.();
     };
 
     const rafId = useRef(-1);
@@ -229,9 +232,9 @@ const ScratchCard = forwardRef<ScratchCardRef, ScratchCardProps>(
           const dis = getDistance(currentPointCoordinates, prevPos.current);
           if (dis >= distanceThreshold) {
             const pointsCount = ~~(dis / distanceThreshold);
-            const isXSame = prevPos.current.x === pageX;
+            const isParallelToX = prevPos.current.x === pageX;
             /* parallel to y axis */
-            if (isXSame) {
+            if (isParallelToX) {
               const iterator = (pageY - prevPos.current.y) / (pointsCount + 1);
               let cur = prevPos.current.y;
               for (let idx = 0; idx < pointsCount; idx++) {
@@ -245,14 +248,14 @@ const ScratchCard = forwardRef<ScratchCardRef, ScratchCardProps>(
             } else {
               const iterator = (pageX - prevPos.current.x) / (pointsCount + 1);
               let cur = prevPos.current.x;
-              const isYSame = prevPos.current.y === pageY;
+              const isParallelToY = prevPos.current.y === pageY;
               for (let idx = 1; idx <= pointsCount; idx++) {
                 cur = cur + iterator;
                 scratchOff(
                   context,
                   cur - canvasDataRef.current.x,
-                  isYSame
-                    ? pageY
+                  isParallelToY
+                    ? pageY - canvasDataRef.current.y
                     : calcPosition(cur, prevPos.current, currentPointCoordinates) -
                         canvasDataRef.current.y
                 );
