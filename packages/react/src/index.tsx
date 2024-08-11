@@ -5,7 +5,6 @@ import throttle from 'lodash.throttle';
 import { useLatest } from './hooks';
 import { calcPosition, getDistance } from './utils';
 
-/* TODO: fade off */
 export type ScratchCardProps = {
   id?: string;
   width: number;
@@ -14,6 +13,7 @@ export type ScratchCardProps = {
   finishTransition?: boolean;
   cover?: string;
   threshold?: number;
+  fadeDuration?: number;
   scratchRadius?: number;
   fillStyle?: string;
   onFinishStart?: () => void;
@@ -44,6 +44,7 @@ const ScratchCard = forwardRef<ScratchCardRef, ScratchCardProps>(
       cover = '',
       fillStyle = '#fff',
       scratchRadius = 15,
+      fadeDuration = 1,
       onFinishStart,
       onFinish,
       ...rest
@@ -76,6 +77,9 @@ const ScratchCard = forwardRef<ScratchCardRef, ScratchCardProps>(
     };
 
     const getOrCreateImgElement = () => {
+      if (coverImageRef.current) {
+        return coverImageRef.current;
+      }
       const imgElement = document.createElement('img');
       imgElement.src = cover;
       imgElement.crossOrigin = 'Anonymous';
@@ -134,12 +138,10 @@ const ScratchCard = forwardRef<ScratchCardRef, ScratchCardProps>(
         if (!window.requestAnimationFrame) return resolve();
         const { context } = canvasDataRef.current;
         if (!context) return resolve();
-        const duration = 1;
         let alpha = 1;
         const end = 0;
         /* value / frames */
-        const step = (alpha - end) / (duration * 60);
-
+        const step = 1 / (fadeDuration * 60);
         const throttledFadeOut = throttle(() => {
           if (!finishRef.current) {
             return cancelAnimationFrame(rafId.current);
