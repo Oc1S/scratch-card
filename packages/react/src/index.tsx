@@ -234,7 +234,11 @@ const ScratchCard = forwardRef<ScratchCardRef, ScratchCardProps>(
               let cur = prevPos.current.y;
               for (let idx = 0; idx < pointsCount; idx++) {
                 cur = cur + iterator;
-                scratchOff(context, canvasDataRef.current.x, cur);
+                scratchOff(
+                  context,
+                  prevPos.current.x - canvasDataRef.current.x,
+                  cur - canvasDataRef.current.y
+                );
               }
             } else {
               const iterator = (pageX - prevPos.current.x) / (pointsCount + 1);
