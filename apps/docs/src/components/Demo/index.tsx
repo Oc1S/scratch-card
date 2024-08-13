@@ -1,6 +1,7 @@
 import { Button, Checkbox, Input } from '@nextui-org/react';
 import ScratchCard, { ScratchCardRef } from '@scratch/react';
 import { useRef, useState } from 'react';
+import { LiveEditor, LiveError, LivePreview, LiveProvider } from 'react-live';
 
 export const Demo: React.FC = () => {
   const [config, _setConfig] = useState({
@@ -15,7 +16,27 @@ export const Demo: React.FC = () => {
   const ref = useRef<ScratchCardRef>();
   return (
     <div className="flex gap-20">
-      <div className="relative">
+      <LiveProvider
+        code={`
+        const a=1
+        render(
+          <ScratchCard
+            {...config}
+            width={+config.width}
+            height={+config.height}
+            ref={ref}
+            cover="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjtiRKZmjSNV05CznXFyEChACf6czEvsYuBw&s"
+          />
+        )
+        `}
+        scope={{ ScratchCard, config, ref }}
+        noInline
+      >
+        <LiveEditor />
+        <LiveError />
+        <LivePreview />
+      </LiveProvider>
+      <div className="relative overflow-hidden rounded">
         <div className="text-primary-50 absolute z-[-1] flex h-full w-full items-center justify-center bg-white text-3xl">
           Thanks!
         </div>

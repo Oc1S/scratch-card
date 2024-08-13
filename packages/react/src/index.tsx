@@ -41,7 +41,7 @@ const ScratchCard = forwardRef<ScratchCardRef, ScratchCardProps>(
       style,
       id: canvasId = 'scratch-card',
       available = true,
-      threshold = 0.9,
+      threshold = 0.95,
       cover = '',
       fillStyle = '#fff',
       scratchRadius = 15,
@@ -92,6 +92,9 @@ const ScratchCard = forwardRef<ScratchCardRef, ScratchCardProps>(
     const paint = () => {
       const { context, ratioHeight, ratioWidth } = canvasDataRef.current;
       if (!context) return;
+      /* fillStyle */
+      context.fillStyle = fillStyle;
+      context.fillRect(0, 0, ratioWidth, ratioHeight);
       /* pic */
       if (cover) {
         const imgElement = getOrCreateImgElement();
@@ -100,10 +103,6 @@ const ScratchCard = forwardRef<ScratchCardRef, ScratchCardProps>(
           : (imgElement.onload = () => {
               context.drawImage(imgElement, 0, 0, ratioWidth, ratioHeight);
             });
-        /* fillStyle */
-      } else {
-        context.fillStyle = fillStyle;
-        context.fillRect(0, 0, ratioWidth, ratioHeight);
       }
     };
 
@@ -115,6 +114,7 @@ const ScratchCard = forwardRef<ScratchCardRef, ScratchCardProps>(
       if (!context) return 1;
       const { data } = context.getImageData(0, 0, ratioWidth, ratioHeight);
       const { length } = data;
+      /* every 4 number */
       const step = 4;
       let transparentPixels = 0;
       /* 遍历 alpha */
