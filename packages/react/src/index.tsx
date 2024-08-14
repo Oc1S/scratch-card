@@ -6,15 +6,24 @@ import { useLatest } from './hooks';
 import { calcPosition, getDistance } from './utils';
 
 export type ScratchCardProps = {
+  /** canvas dom id for multiple component usage */
   id?: string;
+  /** canvas dom width */
   width: number;
+  /** canvas dom height */
   height: number;
+  /** if it's available to scratch */
   available?: boolean;
+  /** has finish animation */
   finishTransition?: boolean;
+  /** cover image source */
   cover?: string;
+  /** threshold to finish scratching */
   threshold?: number;
   fadeDuration?: number;
+  /** radius while scratching */
   scratchRadius?: number;
+  /** fillStyle under img */
   fillStyle?: string;
   onFill?: () => void;
   onFinishStart?: () => void;

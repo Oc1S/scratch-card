@@ -22,7 +22,7 @@
   --ifm-color-primary-lightest: #3cad6e;
   --ifm-code-font-size: 95%;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
-  --ifm-navbar-background-color: transparent;
+  --ifm-navbar-background-color: #000;
   --ifm-navbar-padding-horizontal: 24px;
   --ifm-footer-background-color: transparent;
 }

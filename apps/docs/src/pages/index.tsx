@@ -18,7 +18,7 @@ export default function Home(): JSX.Element {
       <Hero />
       <main>
         <ComponentFeatures />
-        <div className="mt-4 flex w-screen flex-col py-10">
+        <div className="mt-4 flex w-screen flex-col px-8">
           <div className="flex flex-col items-center justify-center">
             <Block>
               <Link id="experience" href="#experience" className="mb-8 inline-block text-3xl">
@@ -34,7 +34,12 @@ export default function Home(): JSX.Element {
               <UsageDemo />
             </Block>
 
-            <div>API</div>
+            <Block>
+              <Link id="api" href="#api" className="mb-8 inline-block text-3xl">
+                API
+              </Link>
+              <div>1</div>
+            </Block>
           </div>
         </div>
       </main>
