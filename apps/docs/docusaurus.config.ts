@@ -4,7 +4,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 
 const config: Config = {
   title: 'Scratch Card',
-  tagline: 'A smooth and easy-to-use canvas scratch card component for Any Framework',
+  tagline: 'A smooth and easy-to-use canvas scratch card component',
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
@@ -72,7 +72,7 @@ const config: Config = {
       ],
     },
     footer: {
-      // style: 'dark',
+      style: 'dark',
       // links: [
       //   {
       //     title: 'Docs',
@@ -114,7 +114,7 @@ const config: Config = {
       //     ],
       //   },
       // ],
-      // copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} Oc1S.`,
     },
     prism: {
       // theme: prismThemes.github,

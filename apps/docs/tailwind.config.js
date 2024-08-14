@@ -8,6 +8,9 @@ module.exports = {
   ],
   theme: {
     extend: {},
+    screens: {
+      mobile: { max: '800px' },
+    },
   },
   darkMode: 'class',
   plugins: [nextui()],

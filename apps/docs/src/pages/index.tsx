@@ -1,21 +1,12 @@
+import { FC } from 'react';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import Link from '@docusaurus/Link';
 import Layout from '@theme/Layout';
-import HomepageFeatures from '@site/src/components/HomepageFeatures';
-import Heading from '@theme/Heading';
+import { Hero, ComponentFeatures, ExperienceDemo, UsageDemo } from '../features/home';
 
-import { Demo } from '../components/Demo';
-
-function HomepageHeader() {
-  const { siteConfig } = useDocusaurusContext();
-  return (
-    <div className="container flex flex-col items-center gap-6 py-12 pt-24">
-      <Heading as="h1" className="text-primary main_title text-6xl">
-        {siteConfig.title}
-      </Heading>
-      <p className="text-2xl">{siteConfig.tagline}</p>
-    </div>
-  );
-}
+const Block: FC<{ children: React.ReactNode }> = ({ children }) => {
+  return <div className="container mt-8 px-8">{children}</div>;
+};
 
 export default function Home(): JSX.Element {
   const { siteConfig } = useDocusaurusContext();
@@ -24,13 +15,29 @@ export default function Home(): JSX.Element {
       title={`${siteConfig.title}`}
       description="scratch,scratch-card,react,reactjs,vanilla,user experience,developer experience,UX,DX"
     >
-      <HomepageHeader />
+      <Hero />
       <main>
-        <HomepageFeatures />
+        <ComponentFeatures />
+        <div className="mt-4 flex w-screen flex-col py-10">
+          <div className="flex flex-col items-center justify-center">
+            <Block>
+              <Link id="experience" href="#experience" className="mb-8 inline-block text-3xl">
+                Experience
+              </Link>
+              <ExperienceDemo />
+            </Block>
+
+            <Block>
+              <Link id="usage" href="#usage" className="mb-8 inline-block text-3xl">
+                Usage
+              </Link>
+              <UsageDemo />
+            </Block>
+
+            <div>API</div>
+          </div>
+        </div>
       </main>
-      <div className="mt-20 flex w-screen flex-col items-center bg-white/10 py-10">
-        <Demo />
-      </div>
     </Layout>
   );
 }

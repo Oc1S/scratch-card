@@ -1,5 +1,5 @@
 'use client';
-import React, { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
+import React, { forwardRef, useEffect, useImperativeHandle, useLayoutEffect, useRef } from 'react';
 import throttle from 'lodash.throttle';
 
 import { useLatest } from './hooks';
@@ -36,10 +36,10 @@ const defaultRatio = 2;
 const ScratchCard = forwardRef<ScratchCardRef, ScratchCardProps>(
   (
     {
+      id: canvasId = 'scratch-card',
       width,
       height,
       style,
-      id: canvasId = 'scratch-card',
       available = true,
       threshold = 0.95,
       cover = '',
@@ -173,25 +173,25 @@ const ScratchCard = forwardRef<ScratchCardRef, ScratchCardProps>(
     };
     const finishScratchingRef = useLatest(finishScratching);
 
-    const recordCanvasInfo = (isFirst = false) => {
+    useLayoutEffect(() => {
       const canvasElement = document.querySelector(`#${canvasId}`) as HTMLCanvasElement;
+      if (!canvasElement) return;
+      const ratio = (ratioRef.current = window.devicePixelRatio || defaultRatio);
+      const ratioWidth = width * ratio;
+      const ratioHeight = height * ratio;
+      canvasElement.style.width = `${width}px`;
+      canvasElement.style.height = `${height}px`;
+      canvasElement.width = ratioWidth;
+      canvasElement.height = ratioHeight;
+    }, [width, height]);
+
+    const recordCanvasInfo = () => {
+      const canvasElement = document.querySelector(`#${canvasId}`) as HTMLCanvasElement;
+      if (!canvasElement) return;
       const ratio = ratioRef.current;
       const ratioWidth = width * ratio;
       const ratioHeight = height * ratio;
 
-      /* 根据父容器宽高设置width、height */
-      // const containerElement = canvasElement.parentElement!;
-      // const containerRect = containerElement.getBoundingClientRect();
-      // const width = Math.ceil(containerRect.width);
-      // const height = Math.ceil(containerRect.height);
-
-      canvasElement.style.width = `${width}px`;
-      canvasElement.style.height = `${height}px`;
-      /* 画布逻辑尺寸 */
-      if (isFirst) {
-        canvasElement.width = ratioWidth;
-        canvasElement.height = ratioHeight;
-      }
       const canvasRect = canvasElement.getBoundingClientRect();
       canvasDataRef.current.x = canvasRect.x + document.documentElement.scrollLeft;
       canvasDataRef.current.y = canvasRect.y + document.documentElement.scrollTop;
@@ -208,8 +208,7 @@ const ScratchCard = forwardRef<ScratchCardRef, ScratchCardProps>(
       });
       if (!context) return;
       canvasDataRef.current.context = context;
-      ratioRef.current = window.devicePixelRatio || defaultRatio;
-      recordCanvasInfo(true);
+      recordCanvasInfo();
       fillArea();
       const throttledCheckTransparency = throttle(() => {
         if (getTransparency() > threshold) {
@@ -336,9 +335,7 @@ const ScratchCard = forwardRef<ScratchCardRef, ScratchCardProps>(
       const callback = throttle(() => {
         recordCanvasInfo();
       }, 16);
-      const observer = new ResizeObserver(() => {
-        recordCanvasInfo();
-      });
+      const observer = new ResizeObserver(callback);
       const canvasElement = document.querySelector(`#${canvasId}`)!;
       observer.observe(canvasElement);
       window.addEventListener('resize', callback);

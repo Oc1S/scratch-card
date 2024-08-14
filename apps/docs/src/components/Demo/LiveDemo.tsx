@@ -5,8 +5,8 @@ import * as Components from '@nextui-org/react';
 import * as intlDateUtils from '@internationalized/date';
 import * as reactAriaI18n from '@react-aria/i18n';
 
-import { BgGridContainer } from '../bg-grid-container';
-import { GradientBox, GradientBoxProps } from '../gradient-box';
+import { BgGridContainer } from './bg-grid-container';
+import { GradientBox, GradientBoxProps } from './gradient-box';
 
 export interface ReactLiveDemoProps {
   code: string;
