@@ -39,6 +39,29 @@ html {
   overflow-x: hidden;
 }
 
+table th,
+table td {
+  border: none;
+  padding: 0;
+}
+
+table tr {
+  background-color: transparent;
+  border-top: none;
+}
+
+table thead {
+  background-color: transparent;
+}
+
+table thead tr {
+  border-bottom: none;
+}
+
+table tr:nth-child(2n) {
+  background-color: transparent;
+}
+
 /* For readability concerns, you should choose a lighter palette in dark mode. */
 [data-theme='dark'] {
   --ifm-color-primary: #25c2a0;

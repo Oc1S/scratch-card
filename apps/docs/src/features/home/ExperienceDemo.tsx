@@ -1,5 +1,6 @@
 import { Button, Checkbox, Input } from '@nextui-org/react';
 import ScratchCard, { ScratchCardRef } from '@scratch/react';
+import clsx from 'clsx';
 import { useRef, useState } from 'react';
 
 export const Demo: React.FC = () => {
@@ -16,7 +17,12 @@ export const Demo: React.FC = () => {
   return (
     <div className="flex justify-center gap-20">
       <div className="relative overflow-hidden rounded">
-        <div className="text-primary-50 absolute z-[-1] flex h-full w-full items-center justify-center bg-gradient-to-br from-[#4ADE80] to-[#06B6D4] text-3xl">
+        <div
+          className={clsx(
+            'text-primary-50 absolute z-[-1] flex h-full w-full items-center justify-center bg-gradient-to-br text-3xl',
+            'from-[#4ADE80] to-[#06B6D4]'
+          )}
+        >
           Thanks!
         </div>
         <ScratchCard
@@ -24,7 +30,7 @@ export const Demo: React.FC = () => {
           width={+config.width}
           height={+config.height}
           ref={ref}
-          cover="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjtiRKZmjSNV05CznXFyEChACf6czEvsYuBw&s"
+          cover="img/cover1.png"
         />
       </div>
       {/* config */}

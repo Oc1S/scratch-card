@@ -24,10 +24,10 @@ const UsageDemo: React.FC = () => {
     </div>
     <ScratchCard
       id="usage-demo"
-      width={400}
-      height={300}
+      width={480}
+      height={270}
       ref={ref}
-      cover="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjtiRKZmjSNV05CznXFyEChACf6czEvsYuBw&s"
+      cover="img/cover2.jpg"
     />
   </div>
   <div className='flex gap-4'>
