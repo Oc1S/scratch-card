@@ -15,7 +15,7 @@ const APITable: React.FC = () => {
       case 'type':
         return renderType(value);
       case 'default':
-        return renderDefault(value);
+        return renderDefaultValue(value);
       default:
         return value;
     }
@@ -23,15 +23,15 @@ const APITable: React.FC = () => {
 
   const renderType = renderTag;
 
-  const renderDefault = (value: string | null) => {
+  const renderDefaultValue = (value: string | null) => {
     if (value === null) {
       return '-';
     }
     return renderTag(value.toString());
   };
   return (
-    <Table aria-label="API Table">
-      <TableHeader className="test11">
+    <Table aria-label="API Table" fullWidth={false}>
+      <TableHeader>
         {keys.map(key => {
           return (
             <TableColumn key={key} className="capitalize">
@@ -40,7 +40,7 @@ const APITable: React.FC = () => {
           );
         })}
       </TableHeader>
-      <TableBody className="w-full">
+      <TableBody>
         {propsList.map(prop => {
           return (
             <TableRow key={prop.attritube}>

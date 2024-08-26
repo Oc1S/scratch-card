@@ -39,6 +39,11 @@ html {
   overflow-x: hidden;
 }
 
+table {
+  display: table;
+  margin-bottom: 0;
+}
+
 table th,
 table td {
   border: none;
