@@ -5,6 +5,7 @@ import Layout from '@theme/Layout';
 import { Hero, ComponentFeatures, ExperienceDemo, UsageDemo } from '../features/home';
 import APITable from '../components/APITable';
 import clsx from 'clsx';
+import Translate from '@docusaurus/Translate';
 
 const Block: FC<{ children: React.ReactNode }> = ({ children }) => {
   return <div className="container mt-8 flex flex-col px-8">{children}</div>;
@@ -35,7 +36,9 @@ export default function Home(): JSX.Element {
                 Experience
               </Title>
               <div className="flex flex-col items-center gap-4">
-                <p className="text-lg">Scratch with your mouse or finger</p>
+                <p className="text-lg">
+                  <Translate>Scratch with your mouse or finger</Translate>
+                </p>
                 <ExperienceDemo />
               </div>
             </Block>

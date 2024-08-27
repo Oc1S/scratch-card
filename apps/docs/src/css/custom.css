@@ -84,6 +84,11 @@ table tr:nth-child(2n) {
   align-items: center;
 }
 
+.navbar__link {
+  display: flex;
+  align-items: center;
+}
+
 .navbar__logo img {
   width: 30px;
   height: 30px;
