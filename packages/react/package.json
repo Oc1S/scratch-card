@@ -1,16 +1,26 @@
 {
-  "name": "@scratch/react",
+  "name": "@kiefer/scratch",
   "private": false,
   "version": "0.0.1",
   "type": "module",
   "author": "Oc1s",
   "main": "dist/index.cjs",
   "module": "dist/index.js",
+  "description": "A smooth and easy-to-use scratch card component for react",
   "scripts": {
     "dev": "tsup --watch",
     "build": "tsup",
+    "publish": "tsup & npm publish --access public",
     "lint": "eslint \"src/**/*.ts\""
   },
+  "keywords": [
+    "react",
+    "typescript",
+    "react scratch",
+    "canvas",
+    "scratch",
+    "scratch card"
+  ],
   "devDependencies": {
     "@repo/eslint-config": "*",
     "@repo/typescript-config": "*",
@@ -21,10 +31,15 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "tsup": "^8.2.4",
-    "typescript": "^5.3.3",
-    "vite": "^5.1.4"
+    "typescript": "^5.3.3"
   },
   "dependencies": {
     "lodash.throttle": "^4.1.1"
-  }
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "files": [
+    "dist"
+  ]
 }
