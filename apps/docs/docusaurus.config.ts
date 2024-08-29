@@ -7,13 +7,10 @@ const config: Config = {
   tagline: 'A smooth and easy-to-use canvas scratch card component',
   favicon: 'img/favicon.ico',
 
-  // Set the production url of your site here
-  /* TODO: */
-  url: 'https://your-docusaurus-site.example.com',
-  // Set the /<baseUrl>/ pathname under which your site is served
+  // production url of doc site
+  url: 'https://oc1s.github.io/',
   // For GitHub pages deployment, it is often '/<projectName>/'
-  /* TODO: */
-  baseUrl: '/',
+  baseUrl: '/scratch-card/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
