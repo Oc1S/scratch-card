@@ -36,6 +36,7 @@
   "dependencies": {
     "lodash.throttle": "^4.1.1"
   },
+  "license": "MIT",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
