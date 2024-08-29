@@ -1,6 +1,7 @@
 import Heading from '@theme/Heading';
 import styles from './styles.module.css';
 import React from 'react';
+import Translate from '@docusaurus/Translate';
 
 type FeatureItem = {
   title: React.ReactNode;
@@ -9,17 +10,37 @@ type FeatureItem = {
 
 const FeatureList: FeatureItem[] = [
   {
-    title: <>🎁 Easy to Use</>,
-    description: <>Use it with minimal configuration.</>,
+    title: (
+      <>
+        🎁 <Translate>Easy to Use</Translate>
+      </>
+    ),
+    description: <Translate>Use it with minimal configuration.</Translate>,
   },
   {
-    title: <>✨ Focus on UX</>,
-    description: <>经过精心优化，确保每一次刮卡都如丝般顺滑，带给用户前所未有的互动体验</>,
-  },
-  {
-    title: <>🎉 功能完备</>,
+    title: (
+      <>
+        ✨ <Translate>Focus on UX</Translate>
+      </>
+    ),
     description: (
-      <>无论是自定义图案、刮卡效果还是交互逻辑，scratch card 都能轻松满足你的需求，功能一应俱全</>
+      <Translate>
+        Meticulously optimized to ensure each scratch card interaction is smooth as silk, providing
+        users with an unprecedented interactive experience.
+      </Translate>
+    ),
+  },
+  {
+    title: (
+      <>
+        🎉 <Translate>Fully functional</Translate>
+      </>
+    ),
+    description: (
+      <Translate>
+        Whether it's custom patterns, scratch-off effects, or interactive logic, the scratch card
+        can effortlessly meet all your needs with its comprehensive functionality.
+      </Translate>
     ),
   },
 ];

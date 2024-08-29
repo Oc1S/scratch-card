@@ -14,22 +14,26 @@ export const Demo: React.FC = () => {
     (value: (typeof config)[T]) =>
       _setConfig(prev => ({ ...prev, [key]: value }));
   const ref = useRef<ScratchCardRef>();
+  const [filled, setFilled] = useState(false);
   return (
     <div className="flex justify-center gap-20">
       <div className="relative overflow-hidden rounded">
-        <div
-          className={clsx(
-            'text-primary-50 absolute z-[-1] flex h-full w-full items-center justify-center bg-gradient-to-br text-3xl',
-            'from-[#4ADE80] to-[#06B6D4]'
-          )}
-        >
-          Thanks!
-        </div>
+        {filled && (
+          <div
+            className={clsx(
+              'text-primary-50 absolute z-[-1] flex h-full w-full items-center justify-center bg-gradient-to-br text-3xl',
+              'from-[#4ADE80] to-[#06B6D4]'
+            )}
+          >
+            Thanks!
+          </div>
+        )}
         <ScratchCard
           {...config}
           width={+config.width}
           height={+config.height}
           ref={ref}
+          onFill={() => setFilled(true)}
           cover="img/cover1.png"
         />
       </div>

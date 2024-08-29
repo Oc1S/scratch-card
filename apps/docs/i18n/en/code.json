@@ -288,5 +288,23 @@
   "theme.unlistedContent.message": {
     "message": "This page is unlisted. Search engines will not index it, and only users having a direct link can access it.",
     "description": "The unlisted content banner message"
+  },
+  "Easy to Use": {
+    "message": "Easy to Use"
+  },
+  "Use it with minimal configuration.": {
+    "message": "Use it with minimal configuration."
+  },
+  "Focus on UX": {
+    "message": "Focus on UX"
+  },
+  "Meticulously optimized to ensure each scratch card interaction is smooth as silk, providing users with an unprecedented interactive experience.": {
+    "message": "Meticulously optimized to ensure each scratch card interaction is smooth as silk, providing users with an unprecedented interactive experience."
+  },
+  "Fully functional": {
+    "message": "Fully functional"
+  },
+  "Whether it's custom patterns, scratch-off effects, or interactive logic, the scratch card can effortlessly meet all your needs with its comprehensive functionality.": {
+    "message": "Whether it's custom patterns, scratch-off effects, or interactive logic, the scratch card can effortlessly meet all your needs with its comprehensive functionality."
   }
 }
