@@ -25,8 +25,8 @@ const FeatureList: FeatureItem[] = [
     ),
     description: (
       <Translate>
-        Meticulously optimized to ensure each scratch card interaction is smooth as silk, providing
-        users with an unprecedented interactive experience.
+        Meticulously optimized to ensure each scratch is smooth as silk, providing an unprecedented
+        interactive experience.
       </Translate>
     ),
   },
