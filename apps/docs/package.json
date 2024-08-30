@@ -20,7 +20,7 @@
     "@docusaurus/preset-classic": "3.4.0",
     "@mdx-js/react": "^3.0.0",
     "@nextui-org/react": "^2.4.6",
-    "@scratch/react": "*",
+    "@kiefer/scratch": "*",
     "clsx": "^2.0.0",
     "framer-motion": "^11.3.21",
     "hast-util-to-html": "^9.0.1",

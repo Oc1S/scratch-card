@@ -1,5 +1,5 @@
 import { Button } from '@nextui-org/react';
-import ScratchCard, { ScratchCardRef } from '@scratch/react';
+import ScratchCard, { ScratchCardRef } from '@kiefer/scratch';
 import { useRef } from 'react';
 import { LiveEditor, LiveError, LivePreview, LiveProvider } from 'react-live';
 

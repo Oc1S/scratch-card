@@ -1,5 +1,5 @@
 import { Button, Checkbox, Input } from '@nextui-org/react';
-import ScratchCard, { ScratchCardRef } from '@scratch/react';
+import ScratchCard, { ScratchCardRef } from '@kiefer/scratch';
 import clsx from 'clsx';
 import { useRef, useState } from 'react';
 

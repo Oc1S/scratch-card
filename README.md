@@ -1,4 +1,4 @@
-# @scratch/react
+# @kiefer/scratch
 
 A smooth and easy-to-use canvas scratch card component
 
@@ -7,5 +7,5 @@ A smooth and easy-to-use canvas scratch card component
 Run the following command:
 
 ```sh
-npm install @scratch/react
+npm install @kiefer/scratch
 ```

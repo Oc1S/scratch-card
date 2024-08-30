@@ -1,3 +1,3 @@
-export const package_name = '@scratch/react';
+export const package_name = '@kiefer/scratch';
 
 export * from './API';
