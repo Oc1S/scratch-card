@@ -6,9 +6,11 @@
     "dev": "turbo dev",
     "publish": "turbo publish --filter=@kiefer/scratch",
     "lint": "turbo lint",
+    "make:api": "bun ./scripts/make-api-doc.ts && bun ./scripts/copy-readme.ts",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
+    "@types/bun": "^1.1.8",
     "eslint": "^8.57.0",
     "prettier": "^3.2.5",
     "prettier-plugin-tailwindcss": "^0.6.5",

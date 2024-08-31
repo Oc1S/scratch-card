@@ -22,7 +22,7 @@ jobs:
 
       - name: 安装依赖
         run: yarn install --frozen-lockfile
-      - name: 构建网站
+      - name: 构建
         run: yarn build
 
       - name: 上传构建制品
