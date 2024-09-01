@@ -38,7 +38,7 @@ export const Demo: React.FC = () => {
         />
       </div>
       {/* config */}
-      <div className="flex flex-col gap-4">
+      <div className="flex w-40 flex-col gap-4">
         <Input
           label="width"
           type="number"

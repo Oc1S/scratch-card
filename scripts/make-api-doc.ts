@@ -38,7 +38,5 @@ API.forEach(value => {
 
 const readmeFile = Bun.file(resolve(__dirname, '..', readmeFilename));
 const fileText = await readmeFile.text();
-console.log(fileText, APIReg.exec(fileText)?.[0], res);
-
 const finalData = fileText.replace(APIReg, res);
 Bun.write(resolve(__dirname, '..', readmeFilename), finalData);
