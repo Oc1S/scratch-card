@@ -28,7 +28,7 @@ jobs:
       - name: 上传构建制品
         uses: actions/upload-pages-artifact@v3
         with:
-          path: apps/docs/build
+          path: docs/build
 
   deploy:
     name: 部署到 GitHub Pages
