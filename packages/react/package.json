@@ -1,7 +1,7 @@
 {
   "name": "@kiefer/scratch",
   "private": false,
-  "version": "0.0.2",
+  "version": "1.0.0",
   "type": "module",
   "author": "Oc1s",
   "main": "dist/index.cjs",
