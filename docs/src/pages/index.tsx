@@ -1,11 +1,13 @@
-import { FC } from 'react';
-import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Link, { Props as LinkProps } from '@docusaurus/Link';
-import Layout from '@theme/Layout';
-import { Hero, ComponentFeatures, ExperienceDemo, UsageDemo } from '../features/home';
-import APITable from '../components/APITable';
-import clsx from 'clsx';
 import Translate from '@docusaurus/Translate';
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import Layout from '@theme/Layout';
+import clsx from 'clsx';
+import { FC, useEffect } from 'react';
+import { toast, Toaster } from 'sonner';
+
+import APITable from '../components/APITable';
+import { ComponentFeatures, ExperienceDemo, Hero, UsageDemo } from '../features/home';
 
 const Block: FC<{ children: React.ReactNode }> = ({ children }) => {
   return <div className="container mt-8 flex flex-col px-8">{children}</div>;
@@ -19,8 +21,33 @@ const Title: FC<LinkProps> = ({ className, children, ...rest }) => {
   );
 };
 
+const key = 'GITHUB_TOAST_DISMISSED';
+
+const shouldShowToast = () => {
+  if (location.hostname.endsWith('github.io') || location.hostname.endsWith('localhost')) {
+    const showed = localStorage.getItem(key);
+    if (!showed) {
+      return true;
+    }
+  }
+  return false;
+};
+
+const useToast = () => {
+  useEffect(() => {
+    if (shouldShowToast()) {
+      toast.warning('This page is currently hosted at github, so it may load slowly.', {
+        duration: 10_000,
+        description: "You're welcome to try it on your own project.",
+        onDismiss: () => localStorage.setItem(key, 'true'),
+      });
+    }
+  }, []);
+};
+
 export default function Home(): JSX.Element {
   const { siteConfig } = useDocusaurusContext();
+  useToast();
   return (
     <Layout
       title={`${siteConfig.title}`}
@@ -59,6 +86,14 @@ export default function Home(): JSX.Element {
           </div>
         </div>
       </main>
+      <Toaster
+        richColors
+        closeButton
+        theme="light"
+        icons={{
+          warning: '👋',
+        }}
+      />
     </Layout>
   );
 }
